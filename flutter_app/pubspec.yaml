@@ -1,5 +1,5 @@
-name: untitled1
-description: "A new Flutter project."
+name: ohmyphone
+description: "OhMyPhone Flutter client - Control your dumb phone remotely"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -35,6 +35,16 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  
+  # State management
+  provider: ^6.1.1
+  
+  # HTTP client and crypto for HMAC authentication
+  http: ^1.1.0
+  crypto: ^3.0.3
+  
+  # Persistent storage for settings
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
