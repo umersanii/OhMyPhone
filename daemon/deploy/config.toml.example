@@ -1,0 +1,21 @@
+# OhMyPhone Daemon Configuration
+# Copy this to config.toml and update values
+
+[server]
+# Bind address - use Tailscale IP in production, 127.0.0.1 for dev
+bind_address = "127.0.0.1"
+port = 8080
+
+[security]
+# Pre-shared secret for HMAC authentication
+# Generate with: openssl rand -hex 32
+secret = "your-secret-key-here-generate-new-one"
+
+# Replay protection window (seconds)
+timestamp_window = 30
+
+[logging]
+# Log level: error, warn, info, debug, trace
+level = "info"
+# Log file path
+file = "/data/local/tmp/ohmyphone.log"

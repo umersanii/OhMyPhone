@@ -1,0 +1,44 @@
+# Rust
+daemon/target/
+daemon/**/*.rs.bk
+daemon/Cargo.lock
+
+# Config files with secrets
+daemon/deploy/config.toml
+**/config.toml
+!**/config.toml.example
+
+# Logs
+*.log
+daemon/**/*.log
+
+# Flutter/Dart
+flutter_app/.dart_tool/
+flutter_app/.flutter-plugins
+flutter_app/.flutter-plugins-dependencies
+flutter_app/.packages
+flutter_app/build/
+flutter_app/pubspec.lock
+flutter_app/**/.android/
+flutter_app/**/.ios/
+flutter_app/**/.idea/
+flutter_app/**/*.iml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Github
+.github
