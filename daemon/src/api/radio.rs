@@ -17,6 +17,18 @@ pub struct DataToggleResponse {
     message: String,
 }
 
+#[derive(Deserialize, Serialize)]
+pub struct AirplaneModeRequest {
+    enable: bool,
+}
+
+#[derive(Serialize)]
+pub struct AirplaneModeResponse {
+    success: bool,
+    enabled: bool,
+    message: String,
+}
+
 /// POST /radio/data - Toggle mobile data on/off
 pub async fn toggle_data(
     req: HttpRequest,
@@ -54,6 +66,49 @@ pub async fn toggle_data(
                 success: false,
                 enabled: !data_request.enable, // Assume it stayed in previous state
                 message: format!("Failed to toggle data: {}", e),
+            };
+            Ok(HttpResponse::InternalServerError().json(response))
+        }
+    }
+}
+
+/// POST /radio/airplane - Toggle airplane mode on/off
+pub async fn toggle_airplane_mode(
+    req: HttpRequest,
+    body: web::Json<AirplaneModeRequest>,
+    auth: web::Data<Arc<AuthService>>,
+) -> Result<HttpResponse> {
+    // Extract the inner value for HMAC verification and later use
+    let airplane_request = body.into_inner();
+
+    // Serialize body for HMAC verification
+    let body_bytes = serde_json::to_vec(&airplane_request)
+        .map_err(|e| actix_web::error::ErrorBadRequest(format!("Invalid JSON: {}", e)))?;
+
+    // Verify authentication
+    auth.verify_request(&req, &body_bytes)?;
+
+    // Execute appropriate command based on enable flag
+    let command = if airplane_request.enable {
+        ShellCommand::EnableAirplaneMode
+    } else {
+        ShellCommand::DisableAirplaneMode
+    };
+
+    match command.execute() {
+        Ok(_) => {
+            let response = AirplaneModeResponse {
+                success: true,
+                enabled: airplane_request.enable,
+                message: format!("Airplane mode {}", if airplane_request.enable { "enabled" } else { "disabled" }),
+            };
+            Ok(HttpResponse::Ok().json(response))
+        }
+        Err(e) => {
+            let response = AirplaneModeResponse {
+                success: false,
+                enabled: !airplane_request.enable, // Assume it stayed in previous state
+                message: format!("Failed to toggle airplane mode: {}", e),
             };
             Ok(HttpResponse::InternalServerError().json(response))
         }

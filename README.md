@@ -53,6 +53,7 @@
 - [x] HMAC authentication implementation
 - [x] GET `/status` endpoint (battery, signal, data/airplane states)
 - [x] POST `/radio/data` - Toggle mobile data
+- [x] POST `/radio/airplane` - Toggle airplane mode
 - [x] Shell executor with command whitelist
 - [x] Configuration management
 - [x] Module structure (`api/` and `executor/`)
@@ -64,10 +65,9 @@
 - [x] **End-to-end testing over ADB port forwarding**
 
 ### 🚧 In Progress
-- [ ] POST `/radio/airplane` - Toggle airplane mode
+- [ ] POST `/call/forward` - Call forwarding control
 
 ### 📋 Todo
-- [ ] POST `/call/forward` - Call forwarding control
 - [ ] POST `/call/dial` - Initiate calls
 - [ ] Tailscale setup for remote access (without ADB)
 - [ ] Flutter app (UI + API client)
@@ -149,16 +149,26 @@ Returns device status
 }
 ```
 
-#### POST `/radio/data` *(Coming soon)*
+#### POST `/radio/data`
 Toggle mobile data
 ```json
-{ "enable": true }
+Request: { "enable": true }
+Response: {
+  "success": true,
+  "enabled": true,
+  "message": "Mobile data enabled"
+}
 ```
 
-#### POST `/radio/airplane` *(Coming soon)*
+#### POST `/radio/airplane`
 Toggle airplane mode
 ```json
-{ "enable": false }
+Request: { "enable": false }
+Response: {
+  "success": true,
+  "enabled": false,
+  "message": "Airplane mode disabled"
+}
 ```
 
 #### POST `/call/forward` *(Planned)*

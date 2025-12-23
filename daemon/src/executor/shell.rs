@@ -10,6 +10,8 @@ pub enum ShellCommand {
     GetUptime,
     EnableData,
     DisableData,
+    EnableAirplaneMode,
+    DisableAirplaneMode,
 }
 
 impl ShellCommand {
@@ -49,6 +51,18 @@ impl ShellCommand {
             ShellCommand::DisableData => {
                 Command::new("svc")
                     .args(["data", "disable"])
+                    .output()
+            }
+            ShellCommand::EnableAirplaneMode => {
+                // Use cmd connectivity for reliable airplane mode control
+                Command::new("cmd")
+                    .args(["connectivity", "airplane-mode", "enable"])
+                    .output()
+            }
+            ShellCommand::DisableAirplaneMode => {
+                // Use cmd connectivity for reliable airplane mode control
+                Command::new("cmd")
+                    .args(["connectivity", "airplane-mode", "disable"])
                     .output()
             }
         };

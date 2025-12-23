@@ -1,6 +1,6 @@
 # ✅ Android Deployment - SUCCESS
 
-**Date:** December 23, 2025  
+**Date:** December 23, 2025
 **Status:** Fully tested and working
 
 ---
@@ -34,7 +34,7 @@ Successfully deployed OhMyPhone daemon to rooted Android device and verified all
   "uptime": 4283
 }
 ```
-**Status:** ✅ Working  
+**Status:** ✅ Working
 **Note:** Battery/signal values show as `-1`/max int - shell commands may need additional permissions
 
 #### POST `/radio/data`
@@ -60,8 +60,8 @@ curl -X POST http://localhost:8080/radio/data \
 ## Known Issues & Solutions
 
 ### 1. Direct WiFi Access Blocked
-**Issue:** Cannot connect from development machine directly to `192.168.1.x:8080`  
-**Cause:** Android network policy/firewall  
+**Issue:** Cannot connect from development machine directly to `192.168.1.x:8080`
+**Cause:** Android network policy/firewall
 **Solution:** Use ADB port forwarding:
 ```bash
 adb forward tcp:8080 tcp:8080
@@ -69,12 +69,12 @@ adb forward tcp:8080 tcp:8080
 ```
 
 ### 2. Battery/Signal Values Inaccurate
-**Issue:** Battery shows `-1`, signal shows `2147483647`  
-**Cause:** Shell commands (`dumpsys battery`, `dumpsys telephony.registry`) may need additional permissions  
+**Issue:** Battery shows `-1`, signal shows `2147483647`
+**Cause:** Shell commands (`dumpsys battery`, `dumpsys telephony.registry`) may need additional permissions
 **Solution:** Investigate required permissions or alternative methods
 
 ### 3. Config Must Bind to 0.0.0.0
-**Issue:** Binding to specific IP doesn't work with ADB forward  
+**Issue:** Binding to specific IP doesn't work with ADB forward
 **Config Required:**
 ```toml
 [server]
@@ -83,7 +83,7 @@ port = 8080
 ```
 
 ### 4. Daemon Doesn't Auto-start on Boot
-**Status:** Not yet implemented  
+**Status:** Not yet implemented
 **Next Step:** Install as Magisk service (see main ANDROID_DEPLOYMENT.md Step 8)
 
 ---
@@ -188,5 +188,5 @@ export AR_aarch64_linux_android="$HOME/Android/Sdk/ndk/29.0.14206865/toolchains/
 
 ---
 
-**For full deployment guide, see:** [ANDROID_DEPLOYMENT.md](ANDROID_DEPLOYMENT.md)  
+**For full deployment guide, see:** [ANDROID_DEPLOYMENT.md](ANDROID_DEPLOYMENT.md)
 **For quick testing guide, see:** [QUICK_ANDROID_TEST.md](QUICK_ANDROID_TEST.md)

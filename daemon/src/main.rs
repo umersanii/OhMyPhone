@@ -44,6 +44,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .route("/status", web::get().to(api::status::get_status))
             .route("/radio/data", web::post().to(api::radio::toggle_data))
+            .route("/radio/airplane", web::post().to(api::radio::toggle_airplane_mode))
     })
     .bind(&bind_addr)?
     .run()
