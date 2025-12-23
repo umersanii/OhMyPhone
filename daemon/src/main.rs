@@ -36,6 +36,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(auth_service.clone()))
             .wrap(middleware::Logger::default())
             .route("/status", web::get().to(api::status::get_status))
+            .route("/radio/data", web::post().to(api::radio::toggle_data))
     })
     .bind(&bind_addr)?
     .run()

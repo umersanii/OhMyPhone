@@ -8,6 +8,8 @@ pub enum ShellCommand {
     GetDataState,
     GetAirplaneMode,
     GetUptime,
+    EnableData,
+    DisableData,
 }
 
 impl ShellCommand {
@@ -37,6 +39,16 @@ impl ShellCommand {
             ShellCommand::GetUptime => {
                 Command::new("cat")
                     .arg("/proc/uptime")
+                    .output()
+            }
+            ShellCommand::EnableData => {
+                Command::new("svc")
+                    .args(["data", "enable"])
+                    .output()
+            }
+            ShellCommand::DisableData => {
+                Command::new("svc")
+                    .args(["data", "disable"])
                     .output()
             }
         };

@@ -211,10 +211,10 @@ Waiter (status.rs):
 ```rust
 pub async fn get_status(req, auth) {
     auth.verify_request(&req)?;           // Check ID badge
-    
+
     let battery = ShellCommand::GetBattery.execute();   // Kitchen work
     let signal = ShellCommand::GetSignal.execute();
-    
+
     HttpResponse::Ok().json({             // Serve the meal
         "battery": battery,
         "signal_dbm": signal
@@ -383,19 +383,19 @@ done
 
 ```
 ┌──────────────────────────────────────────┐
-│  Security Guard (auth.rs)                │  
+│  Security Guard (auth.rs)                │
 │  → Only checks badges                    │  Never cooks food
 │  → Doesn't care what kitchen does        │  or takes orders
 └──────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────┐
-│  Waiter (api/status.rs)                  │  
+│  Waiter (api/status.rs)                  │
 │  → Takes orders                          │  Never checks IDs
 │  → Brings food from kitchen              │  or cooks
 └──────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────┐
-│  Chef (executor/shell.rs)                │  
+│  Chef (executor/shell.rs)                │
 │  → Only cooks (runs commands)            │  Never talks to
 │  → Doesn't know who ordered              │  customers
 └──────────────────────────────────────────┘
@@ -418,7 +418,7 @@ Problem: Anyone sniffing network sees your password
 
 **Better:** Send encrypted signature (HMAC)
 ```
-1. Main phone: 
+1. Main phone:
    message = "Turn off data"
    timestamp = 1703340000
    hmac = HMAC(message + timestamp, secret_key)
@@ -489,26 +489,26 @@ POST /call/forward    → service call phone 14...
 
 ## 💡 Common Beginner Questions
 
-**Q: Why Rust and not Python/JavaScript?**  
+**Q: Why Rust and not Python/JavaScript?**
 A: Like using a metal pan vs plastic. Rust is:
 - Fast (no performance overhead)
 - Safe (catches bugs at compile time)
 - Small binary (important for phones)
 
-**Q: Why not use Termux or Tasker?**  
+**Q: Why not use Termux or Tasker?**
 A: Like driving a car vs taking a taxi:
 - Full control over everything
 - No middleman restrictions
 - Can root the phone safely
 
-**Q: Is this secure enough?**  
+**Q: Is this secure enough?**
 A: Yes, because:
 - Daemon only listens on VPN (not public internet)
 - HMAC prevents tampering
 - Whitelist prevents arbitrary commands
 - No user data stored
 
-**Q: What if daemon crashes?**  
+**Q: What if daemon crashes?**
 A: The `daemon.sh` script and Magisk ensure it auto-restarts on boot. You can also add a watchdog.
 
 ---

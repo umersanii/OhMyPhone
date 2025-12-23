@@ -52,6 +52,7 @@
 - [x] Daemon structure (Rust)
 - [x] HMAC authentication implementation
 - [x] GET `/status` endpoint (battery, signal, data/airplane states)
+- [x] POST `/radio/data` - Toggle mobile data
 - [x] Shell executor with command whitelist
 - [x] Configuration management
 - [x] Module structure (`api/` and `executor/`)
@@ -60,7 +61,6 @@
 - [x] Daemon runs successfully on development machine
 
 ### 🚧 In Progress
-- [ ] POST `/radio/data` - Toggle mobile data
 - [ ] POST `/radio/airplane` - Toggle airplane mode
 
 ### 📋 Todo
