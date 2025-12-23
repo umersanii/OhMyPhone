@@ -20,7 +20,7 @@ sign_request() {
     local timestamp=$(date +%s%3N)  # Milliseconds
     local to_sign="${body}${timestamp}"
     local signature=$(echo -n "$to_sign" | openssl dgst -sha256 -hmac "$SECRET" -binary | base64)
-    
+
     echo "$signature|$timestamp"
 }
 
