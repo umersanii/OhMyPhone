@@ -1,5 +1,4 @@
 use std::process::Command;
-use serde_json::Value;
 
 /// Whitelisted shell commands - NO arbitrary execution
 #[derive(Debug)]

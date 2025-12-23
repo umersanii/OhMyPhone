@@ -54,6 +54,10 @@
 - [x] GET `/status` endpoint (battery, signal, data/airplane states)
 - [x] Shell executor with command whitelist
 - [x] Configuration management
+- [x] Module structure (`api/` and `executor/`)
+- [x] Unit tests for authentication
+- [x] Integration test scripts
+- [x] Daemon runs successfully on development machine
 
 ### 🚧 In Progress
 - [ ] POST `/radio/data` - Toggle mobile data
@@ -206,19 +210,38 @@ Initiate outgoing call
 ### Build daemon
 ```bash
 cd daemon
-cargo build
-cargo test
-cargo run
+cargo build              # Build debug version
+cargo build --release    # Build optimized version
+cargo test               # Run unit tests
+cargo run                # Run locally
 ```
 
 ### Testing
 ```bash
 # Unit tests
-cargo test
+cd daemon && cargo test
 
-# Integration test (daemon must be running)
+# Quick integration test (daemon must be running)
+./test/quick_test.sh
+
+# Full test suite
+export DAEMON_SECRET="your-secret-from-config"
 ./test/api_test.sh
 ```
+
+### Understanding the Code
+
+New to the codebase? Start here:
+
+1. **[Daemon Explained](docs/DAEMON_EXPLAINED.md)** - Beginner's guide with analogies
+2. `daemon/src/main.rs` - Entry point, see how server starts
+3. `daemon/src/api/status.rs` - Example endpoint implementation
+4. `daemon/src/auth.rs` - See how security works
+
+**Key concepts:**
+- **Module structure**: `api/` for endpoints, `executor/` for shell commands
+- **Authentication flow**: Request → Auth check → Execute → Response
+- **Whitelist pattern**: Only predefined commands, no arbitrary execution
 
 ---
 
@@ -235,11 +258,13 @@ Contributions welcome! Please:
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file
-
----
-
 ## Documentation
+
+- **[Setup Guide](docs/guide.md)** - Detailed installation and configuration
+- **[Architecture Details](docs/ARCHITECTURE.md)** - In-depth system design and API specs
+- **[Daemon Explained](docs/DAEMON_EXPLAINED.md)** - Beginner-friendly guide to understanding the daemon
+- **[Testing Guide](test/manual_test.md)** - How to test locally and on Android
+- **API Reference** - See above
 
 - [Setup Guide](docs/guide.md) - Detailed installation and configuration
 - [Architecture Details](docs/ARCHITECTURE.md) - In-depth system design

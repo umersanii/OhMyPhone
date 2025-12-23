@@ -5,6 +5,7 @@ use std::fs;
 pub struct Config {
     pub server: ServerConfig,
     pub security: SecurityConfig,
+    #[allow(dead_code)]
     pub logging: LoggingConfig,
 }
 
@@ -21,6 +22,7 @@ pub struct SecurityConfig {
 }
 
 #[derive(Debug, Deserialize, Clone)]
+#[allow(dead_code)]
 pub struct LoggingConfig {
     pub level: String,
     pub file: String,

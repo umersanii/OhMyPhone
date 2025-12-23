@@ -1,4 +1,4 @@
-use actix_web::{error, http::StatusCode, Error, HttpRequest, HttpResponse};
+use actix_web::{error, Error, HttpRequest};
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use std::collections::HashSet;
