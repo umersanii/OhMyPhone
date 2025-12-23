@@ -15,6 +15,7 @@ pub enum ShellCommand {
     EnableCallForwarding(String),
     DisableCallForwarding,
     GetCallForwardingState,
+    DialNumber(String),
 }
 
 impl ShellCommand {
@@ -89,6 +90,14 @@ impl ShellCommand {
                     .args(["call", "phone", "13", "i32", "1", "i32", "0"])
                     .output()
             }
+            ShellCommand::DialNumber(number) => {
+                // am start -a android.intent.action.CALL -d tel:<number>
+                // Phone number is already validated in API layer
+                let tel_uri = format!("tel:{}", number);
+                Command::new("am")
+                    .args(["start", "-a", "android.intent.action.CALL", "-d", &tel_uri])
+                    .output()
+            }
         };
 
         match output {
@@ -157,12 +166,12 @@ pub fn parse_call_forwarding(output: &str) -> bool {
     // The output from "service call phone 13" is parcel data
     // When call forwarding is active, the response contains non-zero status codes
     // This is a simplified heuristic - may need adjustment based on device
-    
+
     // Look for "Result: Parcel" which indicates a response
     if !output.contains("Result: Parcel") {
         return false;
     }
-    
+
     // If there's actual forwarding data, the parcel will be non-empty
     // A simple heuristic: more than 50 chars of output suggests active forwarding
     output.len() > 50

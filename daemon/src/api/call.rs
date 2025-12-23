@@ -19,6 +19,17 @@ pub struct CallForwardResponse {
     message: String,
 }
 
+#[derive(Deserialize, Serialize)]
+pub struct CallDialRequest {
+    number: String,
+}
+
+#[derive(Serialize)]
+pub struct CallDialResponse {
+    success: bool,
+    message: String,
+}
+
 /// POST /call/forward - Configure call forwarding
 pub async fn set_call_forwarding(
     req: HttpRequest,
@@ -140,5 +151,50 @@ mod tests {
         assert!(!is_valid_phone_number("123-456-7890")); // No dashes
         assert!(!is_valid_phone_number("123")); // Too short
         assert!(!is_valid_phone_number("12345678901234567890")); // Too long
+    }
+}
+
+/// POST /call/dial - Initiate a phone call
+pub async fn dial_call(
+    req: HttpRequest,
+    body: web::Json<CallDialRequest>,
+    auth: web::Data<Arc<AuthService>>,
+) -> Result<HttpResponse> {
+    // Extract the inner value for HMAC verification
+    let dial_request = body.into_inner();
+
+    // Serialize body for HMAC verification
+    let body_bytes = serde_json::to_vec(&dial_request)
+        .map_err(|e| actix_web::error::ErrorBadRequest(format!("Invalid JSON: {}", e)))?;
+
+    // Verify authentication
+    auth.verify_request(&req, &body_bytes)?;
+
+    // Validate phone number format
+    if !is_valid_phone_number(&dial_request.number) {
+        return Ok(HttpResponse::BadRequest().json(CallDialResponse {
+            success: false,
+            message: "Invalid phone number format".to_string(),
+        }));
+    }
+
+    // Execute dial command
+    let command = ShellCommand::DialNumber(dial_request.number.clone());
+
+    match command.execute() {
+        Ok(_) => {
+            let response = CallDialResponse {
+                success: true,
+                message: format!("Dialing {}", dial_request.number),
+            };
+            Ok(HttpResponse::Ok().json(response))
+        }
+        Err(e) => {
+            let response = CallDialResponse {
+                success: false,
+                message: format!("Failed to initiate call: {}", e),
+            };
+            Ok(HttpResponse::InternalServerError().json(response))
+        }
     }
 }

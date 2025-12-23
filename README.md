@@ -51,24 +51,24 @@
 - [x] Setup and deployment guide
 - [x] Daemon structure (Rust)
 - [x] HMAC authentication implementation
-- [x] GET `/status` endpoint (battery, signal, data/airplane states)
+- [x] GET `/status` endpoint (battery, signal, data/airplane/forwarding states)
 - [x] POST `/radio/data` - Toggle mobile data
 - [x] POST `/radio/airplane` - Toggle airplane mode
-- [x] POST `/call/forward` - Call forwarding control
-- [x] Shell executor with command whitelist
+- [x] POST `/call/forward` - Call forwarding control with phone number validation
+- [x] POST `/call/dial` - Initiate phone calls
+- [x] Shell executor with command whitelist (MMI codes via `service call phone`)
 - [x] Configuration management
 - [x] Module structure (`api/` and `executor/`)
-- [x] Unit tests for authentication
-- [x] Integration test scripts
+- [x] Unit tests for authentication and phone number validation
+- [x] Integration test scripts (data, airplane, call forwarding, call dial)
 - [x] Daemon runs successfully on development machine
-- [x] **Android deployment (tested on rooted device)**
-- [x] **Cross-compilation for aarch64-linux-android**
-- [x] **End-to-end testing over ADB port forwarding**
+- [x] Local testing validated (API endpoints, validation logic, error handling)
 
 ### 🚧 In Progress
-- [ ] POST `/call/dial` - Initiate calls
+- [ ] Android cross-compilation environment setup
 
 ### 📋 Todo
+- [ ] Deploy and test on Android device
 - [ ] Tailscale setup for remote access (without ADB)
 - [ ] Flutter app (UI + API client)
 - [ ] Rate limiting and audit logs
@@ -183,11 +183,16 @@ Response: {
 ```
 *Supports phone numbers with 7-15 digits, optional + prefix*
 
-#### POST `/call/dial` *(Planned)*
+#### POST `/call/dial`
 Initiate outgoing call
 ```json
-{ "number": "+1234567890" }
+Request: { "number": "+1234567890" }
+Response: {
+  "success": true,
+  "message": "Dialing +1234567890"
+}
 ```
+*Validates phone number format before dialing*
 
 ---
 
