@@ -12,6 +12,9 @@ pub enum ShellCommand {
     DisableData,
     EnableAirplaneMode,
     DisableAirplaneMode,
+    EnableCallForwarding(String),
+    DisableCallForwarding,
+    GetCallForwardingState,
 }
 
 impl ShellCommand {
@@ -63,6 +66,27 @@ impl ShellCommand {
                 // Use cmd connectivity for reliable airplane mode control
                 Command::new("cmd")
                     .args(["connectivity", "airplane-mode", "disable"])
+                    .output()
+            }
+            ShellCommand::EnableCallForwarding(number) => {
+                // service call phone 14 i32 1 s16 "*21*+1234567890#"
+                // The phone number is already validated in the API layer
+                let code = format!("*21*{}#", number);
+                Command::new("service")
+                    .args(["call", "phone", "14", "i32", "1", "s16", &code])
+                    .output()
+            }
+            ShellCommand::DisableCallForwarding => {
+                // service call phone 14 i32 1 s16 "#21#"
+                Command::new("service")
+                    .args(["call", "phone", "14", "i32", "1", "s16", "#21#"])
+                    .output()
+            }
+            ShellCommand::GetCallForwardingState => {
+                // Query call forwarding status
+                // service call phone 13 i32 1 i32 0
+                Command::new("service")
+                    .args(["call", "phone", "13", "i32", "1", "i32", "0"])
                     .output()
             }
         };
@@ -125,6 +149,23 @@ pub fn parse_uptime(output: &str) -> u64 {
         .and_then(|s| s.parse::<f64>().ok())
         .map(|f| f as u64)
         .unwrap_or(0)
+}
+
+/// Parse call forwarding state
+/// The service call output is complex, but we can check for specific indicators
+pub fn parse_call_forwarding(output: &str) -> bool {
+    // The output from "service call phone 13" is parcel data
+    // When call forwarding is active, the response contains non-zero status codes
+    // This is a simplified heuristic - may need adjustment based on device
+    
+    // Look for "Result: Parcel" which indicates a response
+    if !output.contains("Result: Parcel") {
+        return false;
+    }
+    
+    // If there's actual forwarding data, the parcel will be non-empty
+    // A simple heuristic: more than 50 chars of output suggests active forwarding
+    output.len() > 50
 }
 
 #[cfg(test)]

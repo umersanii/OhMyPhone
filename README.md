@@ -54,6 +54,7 @@
 - [x] GET `/status` endpoint (battery, signal, data/airplane states)
 - [x] POST `/radio/data` - Toggle mobile data
 - [x] POST `/radio/airplane` - Toggle airplane mode
+- [x] POST `/call/forward` - Call forwarding control
 - [x] Shell executor with command whitelist
 - [x] Configuration management
 - [x] Module structure (`api/` and `executor/`)
@@ -65,10 +66,9 @@
 - [x] **End-to-end testing over ADB port forwarding**
 
 ### 🚧 In Progress
-- [ ] POST `/call/forward` - Call forwarding control
+- [ ] POST `/call/dial` - Initiate calls
 
 ### 📋 Todo
-- [ ] POST `/call/dial` - Initiate calls
 - [ ] Tailscale setup for remote access (without ADB)
 - [ ] Flutter app (UI + API client)
 - [ ] Rate limiting and audit logs
@@ -171,11 +171,17 @@ Response: {
 }
 ```
 
-#### POST `/call/forward` *(Planned)*
+#### POST `/call/forward`
 Configure call forwarding
 ```json
-{ "enable": true, "number": "+1234567890" }
+Request: { "enable": true, "number": "+1234567890" }
+Response: {
+  "success": true,
+  "enabled": true,
+  "message": "Call forwarding enabled"
+}
 ```
+*Supports phone numbers with 7-15 digits, optional + prefix*
 
 #### POST `/call/dial` *(Planned)*
 Initiate outgoing call

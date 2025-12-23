@@ -34,6 +34,8 @@ pub async fn get_status(
         .unwrap_or_default();
     let uptime_output = ShellCommand::GetUptime.execute()
         .unwrap_or_default();
+    let forwarding_output = ShellCommand::GetCallForwardingState.execute()
+        .unwrap_or_default();
 
     // Parse outputs
     let (battery, charging) = shell::parse_battery(&battery_output);
@@ -41,9 +43,7 @@ pub async fn get_status(
     let data = data_output.trim() == "1";
     let airplane = airplane_output.trim() == "1";
     let uptime = shell::parse_uptime(&uptime_output);
-
-    // TODO: Implement call forwarding detection
-    let call_forwarding = false;
+    let call_forwarding = shell::parse_call_forwarding(&forwarding_output);
 
     let response = StatusResponse {
         battery,

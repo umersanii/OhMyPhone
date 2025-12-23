@@ -45,6 +45,7 @@ async fn main() -> std::io::Result<()> {
             .route("/status", web::get().to(api::status::get_status))
             .route("/radio/data", web::post().to(api::radio::toggle_data))
             .route("/radio/airplane", web::post().to(api::radio::toggle_airplane_mode))
+            .route("/call/forward", web::post().to(api::call::set_call_forwarding))
     })
     .bind(&bind_addr)?
     .run()
