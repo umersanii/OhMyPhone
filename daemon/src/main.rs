@@ -12,10 +12,17 @@ async fn main() -> std::io::Result<()> {
     // Initialize logger
     env_logger::init();
 
-    // Load configuration
-    let config = config::Config::load("deploy/config.toml")
-        .unwrap_or_else(|e| {
-            error!("Failed to load config: {}", e);
+    // Load configuration - try multiple locations
+    let config_paths = vec![
+        "/data/local/tmp/config.toml",     // Android deployment
+        "deploy/config.toml",               // Development
+        "config.toml",                      // Current directory
+    ];
+
+    let config = config_paths.iter()
+        .find_map(|path| config::Config::load(path).ok())
+        .unwrap_or_else(|| {
+            error!("Failed to load config from any location: {:?}", config_paths);
             std::process::exit(1);
         });
 

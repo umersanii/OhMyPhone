@@ -59,6 +59,9 @@
 - [x] Unit tests for authentication
 - [x] Integration test scripts
 - [x] Daemon runs successfully on development machine
+- [x] **Android deployment (tested on rooted device)**
+- [x] **Cross-compilation for aarch64-linux-android**
+- [x] **End-to-end testing over ADB port forwarding**
 
 ### 🚧 In Progress
 - [ ] POST `/radio/airplane` - Toggle airplane mode
@@ -66,10 +69,11 @@
 ### 📋 Todo
 - [ ] POST `/call/forward` - Call forwarding control
 - [ ] POST `/call/dial` - Initiate calls
+- [ ] Tailscale setup for remote access (without ADB)
 - [ ] Flutter app (UI + API client)
-- [ ] Integration tests with curl scripts
 - [ ] Rate limiting and audit logs
-- [ ] End-to-end testing
+- [ ] End-to-end testing over Tailscale
+- [ ] Magisk service auto-start on boot
 - [ ] Optional: SIP/VoIP bridge
 
 ---

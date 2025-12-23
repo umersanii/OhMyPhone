@@ -25,7 +25,7 @@ pub async fn toggle_data(
 ) -> Result<HttpResponse> {
     // Extract the inner value for HMAC verification and later use
     let data_request = body.into_inner();
-    
+
     // Serialize body for HMAC verification
     let body_bytes = serde_json::to_vec(&data_request)
         .map_err(|e| actix_web::error::ErrorBadRequest(format!("Invalid JSON: {}", e)))?;
