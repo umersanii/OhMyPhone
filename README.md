@@ -69,16 +69,19 @@
 - [x] Dashboard with card-based UI (equal priority controls)
 - [x] Settings page with connection testing
 - [x] Persistent configuration storage
+- [x] Android cross-compilation for daemon binary (aarch64, Android 30+)
+- [x] Daemon deployed to Android device via ADB
+- [x] Daemon verified running with HMAC authentication
 
 ### 🚧 In Progress
-- [ ] Android cross-compilation for daemon binary
+- [ ] Tailscale setup for remote access (without ADB)
 
 ### 📋 Todo
-- [ ] Deploy daemon to Android device
-- [ ] Tailscale setup for remote access (without ADB)
+- [ ] Configure daemon to bind to Tailscale IP (currently localhost only)
+- [ ] Test all endpoints on actual Android hardware
 - [ ] Build and test Flutter APK on main phone
-- [ ] Rate limiting and audit logs
 - [ ] End-to-end testing over Tailscale
+- [ ] Rate limiting and audit logs
 - [ ] Magisk service auto-start on boot
 - [ ] Optional: SIP/VoIP bridge
 
