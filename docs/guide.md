@@ -21,15 +21,17 @@ NOT rooted                  Rooted LineageOS
 
 ### Production
 - Tailscale VPN tunnel between phones
-- Daemon binds to Tailscale IP `100.x.x.x:8080`
+- Daemon binds to dumb phone Tailscale IP `100.99.172.92:8080` (update if the IP rotates)
+- Main phone reachable at `100.111.10.92`
 
 ### Tailscale Configuration
 
 1. Install Tailscale on both devices
 2. Authenticate both to same tailnet
-3. Note dumb phone's assigned Tailscale IP (e.g., `100.64.0.1`)
-4. Configure daemon to bind to Tailscale interface
-5. Flutter app connects to `http://100.64.0.1:8080`
+3. Confirm dumb phone IP: `100.99.172.92` (update in `deploy/config.toml` if it changes)
+4. Confirm main phone IP: `100.111.10.92`
+5. Configure daemon to bind to the dumb phone Tailscale IP
+6. Flutter app connects to `http://100.99.172.92:8080`
 
 **Firewall**: Allow only port 8080 from main phone's Tailscale IP
 
@@ -99,16 +101,16 @@ echo 1 > /sys/module/printk/parameters/console_suspend
 ### Daemon Config (`daemon/deploy/config.toml`)
 ```toml
 [server]
-bind_ip = "100.64.0.1"  # Tailscale IP, or "192.168.1.100" for WiFi
+bind_address = "100.99.172.92"  # Tailscale IP of dumb phone
 port = 8080
 
-[auth]
-shared_secret = "base64_encoded_32_byte_key"
-replay_window_seconds = 30
+[security]
+secret = "fe0b169e98708033563a3d20808687ceffedec4d7b0392ee08eb104c5f689188"
+timestamp_window = 30
 
 [logging]
 level = "info"
-path = "/data/local/tmp/ohmyphone.log"
+file = "/data/local/tmp/ohmyphone.log"
 ```
 
 ### Flutter Config (via Settings UI)

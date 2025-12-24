@@ -7,7 +7,7 @@ class AppConfig {
 
   static Future<String> getServerUrl() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_keyServerUrl) ?? '';
+    return prefs.getString(_keyServerUrl) ?? 'http://100.99.172.92:8080';
   }
 
   static Future<void> setServerUrl(String url) async {
@@ -17,7 +17,7 @@ class AppConfig {
 
   static Future<String> getSecret() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_keySecret) ?? '';
+    return prefs.getString(_keySecret) ?? 'fe0b169e98708033563a3d20808687ceffedec4d7b0392ee08eb104c5f689188';
   }
 
   static Future<void> setSecret(String secret) async {
