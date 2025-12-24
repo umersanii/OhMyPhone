@@ -71,7 +71,7 @@ class RelayState extends ChangeNotifier {
     notifyListeners();
 
     final response = await _client!.getStatus();
-    
+
     if (response.success && response.data != null) {
       _status = response.data;
       _connectionStatus = ConnectionStatus.online;
@@ -81,7 +81,7 @@ class RelayState extends ChangeNotifier {
       _connectionStatus = ConnectionStatus.error;
       _errorMessage = response.message ?? 'Unknown error';
     }
-    
+
     notifyListeners();
   }
 
@@ -116,7 +116,7 @@ class RelayState extends ChangeNotifier {
       enable: !_status!.callForwardingActive,
       number: number,
     );
-    
+
     if (response.success) {
       await pollStatus();
     } else {

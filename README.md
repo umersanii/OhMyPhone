@@ -63,14 +63,20 @@
 - [x] Integration test scripts (data, airplane, call forwarding, call dial)
 - [x] Daemon runs successfully on development machine
 - [x] Local testing validated (API endpoints, validation logic, error handling)
+- [x] Flutter app with Material 3 dark theme
+- [x] Provider state management with auto-polling
+- [x] HMAC authentication client
+- [x] Dashboard with card-based UI (equal priority controls)
+- [x] Settings page with connection testing
+- [x] Persistent configuration storage
 
 ### 🚧 In Progress
-- [ ] Android cross-compilation environment setup
+- [ ] Android cross-compilation for daemon binary
 
 ### 📋 Todo
-- [ ] Deploy and test on Android device
+- [ ] Deploy daemon to Android device
 - [ ] Tailscale setup for remote access (without ADB)
-- [ ] Flutter app (UI + API client)
+- [ ] Build and test Flutter APK on main phone
 - [ ] Rate limiting and audit logs
 - [ ] End-to-end testing over Tailscale
 - [ ] Magisk service auto-start on boot
@@ -114,13 +120,22 @@
    adb reboot
    ```
 
-5. **Test connection**
+5. **Install Flutter app** (on main phone)
    ```bash
-   # From main phone (replace with dumb phone's Tailscale IP)
-   curl -H "X-Auth: <hmac>" -H "X-Time: <timestamp>" http://100.x.x.x:8080/status
+   cd flutter_app
+   flutter pub get
+   flutter build apk --release
+   flutter install
    ```
 
-See [docs/guide.md](docs/guide.md) for detailed setup instructions.
+6. **Configure Flutter app**
+   - Open app and tap settings icon (⚙️)
+   - Enter daemon URL: `http://100.x.x.x:8080` (Tailscale IP)
+   - Enter HMAC secret (from config.toml)
+   - Set polling interval (default: 15s)
+   - Tap "Test Connection" then "Save"
+
+See [docs/guide.md](docs/guide.md) for detailed setup instructions and [flutter_app/README.md](flutter_app/README.md) for Flutter-specific documentation.
 
 ---
 

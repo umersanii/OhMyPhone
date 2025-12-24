@@ -229,7 +229,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildInfoRow(BuildContext context, String label, String value) {
     final theme = Theme.of(context);
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -282,7 +282,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     // Temporarily update client to test
     await relayState.updateConfiguration(serverUrl, secret);
-    
+
     // Show loading
     if (!mounted) return;
     showDialog(
@@ -307,7 +307,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     // Test connection
     await relayState.pollStatus();
-    
+
     if (!mounted) return;
     Navigator.pop(context); // Close loading dialog
 
@@ -323,7 +323,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _showMessage(String message, {bool isError = true}) {
     if (!mounted) return;
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),

@@ -29,7 +29,7 @@ class DashboardPage extends StatelessWidget {
             // Connection status card - persistent at top
             _buildConnectionStatusCard(context, relayState),
             const SizedBox(height: 16),
-            
+
             // Radio controls
             _buildControlCard(
               context: context,
@@ -40,7 +40,7 @@ class DashboardPage extends StatelessWidget {
               enabled: status != null,
             ),
             const SizedBox(height: 16),
-            
+
             _buildControlCard(
               context: context,
               title: 'Airplane Mode',
@@ -50,11 +50,11 @@ class DashboardPage extends StatelessWidget {
               enabled: status != null,
             ),
             const SizedBox(height: 16),
-            
+
             // Call forwarding card
             _buildCallForwardingCard(context, relayState, status),
             const SizedBox(height: 16),
-            
+
             // Device info cards
             if (status != null) ...[
               Row(
@@ -90,11 +90,11 @@ class DashboardPage extends StatelessWidget {
   Widget _buildConnectionStatusCard(BuildContext context, RelayState relayState) {
     final theme = Theme.of(context);
     final status = relayState.connectionStatus;
-    
+
     Color statusColor;
     IconData statusIcon;
     String statusText;
-    
+
     switch (status) {
       case ConnectionStatus.online:
         statusColor = Colors.green;
@@ -164,7 +164,7 @@ class DashboardPage extends StatelessWidget {
     required bool enabled,
   }) {
     final theme = Theme.of(context);
-    
+
     return Card(
       elevation: 1,
       child: InkWell(
@@ -260,7 +260,7 @@ class DashboardPage extends StatelessWidget {
     required Color color,
   }) {
     final theme = Theme.of(context);
-    
+
     return Card(
       elevation: 1,
       child: Padding(
@@ -295,7 +295,7 @@ class DashboardPage extends StatelessWidget {
     } else {
       // Enable forwarding - show dialog for number
       final controller = TextEditingController();
-      
+
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -344,7 +344,7 @@ class DashboardPage extends StatelessWidget {
   String _formatTime(DateTime time) {
     final now = DateTime.now();
     final diff = now.difference(time);
-    
+
     if (diff.inSeconds < 60) {
       return '${diff.inSeconds}s ago';
     } else if (diff.inMinutes < 60) {

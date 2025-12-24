@@ -111,17 +111,24 @@ level = "info"
 path = "/data/local/tmp/ohmyphone.log"
 ```
 
-### Flutter Config (`flutter_app/lib/config.dart`)
-```dart
-class Config {
-  static const String serverUrl = "http://100.64.0.1:8080";  // Tailscale IP
-  static const String sharedSecret = "base64_encoded_32_byte_key";
-  static const Duration pollInterval = Duration(seconds: 10);
-  static const Duration requestTimeout = Duration(seconds: 5);
-}
-```
+### Flutter Config (via Settings UI)
+
+The Flutter app stores configuration in persistent storage. No code changes needed!
+
+1. **Open app** on main phone
+2. **Tap settings icon** (⚙️) in app bar
+3. **Configure connection**:
+   - **Server URL**: `http://100.64.0.1:8080` (dumb phone's Tailscale IP)
+   - **HMAC Secret**: Same value as `shared_secret` in daemon's config.toml
+   - **Polling Interval**: 5-60 seconds (default: 15s)
+4. **Test Connection**: Verifies connectivity before saving
+5. **Tap Save**: Configuration persisted locally
 
 **Generate shared secret**: `openssl rand -base64 32`
+
+> **Note**: Both daemon config.toml and Flutter app must use identical HMAC secret.
+
+See [flutter_app/README.md](../flutter_app/README.md) for Flutter-specific documentation.
 
 ---
 
@@ -130,14 +137,26 @@ class Config {
 ### Manual Testing Checklist
 - [ ] Daemon survives reboot and starts automatically
 - [ ] Flutter app reconnects after dumb phone reboot
-- [ ] Call forwarding persists across mobile data toggle
+- [ ] Flutter app UI displays all status indicators correctly
+- [ ] Toggle controls work (data, airplane mode, call forwarding)
+- [ ] Call forwarding dialog accepts and validates phone numbers
+- [ ] Battery and signal indicators update in real-time
+- [ ] Connection status card shows accurate state (online/offline/error)
+- [ ] Settings page saves and restores configuration
+- [ ] Test Connection feature validates daemon connectivity
+- [ ] Pull-to-refresh manually updates status
 - [ ] HMAC replay protection rejects old requests
 - [ ] Battery drain < 5% per day on dumb phone (screen off)
+- [ ] Main phone polling doesn't cause excessive battery drain
 
 ### Integration Tests
-1. Mock HTTP server for Flutter app testing
-2. Daemon test suite with curl scripts (`tests/integration/`)
-3. End-to-end: Real devices on WiFi
+1. **Daemon tests**: Curl scripts in `test/` directory validate all API endpoints
+2. **Flutter tests**: Mock HTTP server for unit testing API client (`flutter test`)
+3. **End-to-end**: Real devices on WiFi/Tailscale
+   - Deploy daemon to dumb phone
+   - Install Flutter APK on main phone
+   - Configure connection via Settings UI
+   - Test all dashboard controls
 
 ---
 
@@ -150,9 +169,26 @@ adb shell su -c "tail -f /data/local/tmp/ohmyphone.log"
 ```
 
 ### Flutter Debug Output
-- Use `logger` package for structured logging
-- Log all API requests/responses in debug mode
-- Show connection status prominently in UI
+```bash
+# Run app in debug mode
+cd flutter_app
+flutter run
+
+# View logs
+flutter logs
+
+# Build and check for errors
+flutter analyze
+flutter test
+```
+
+**App features**:
+- Connection status indicator in persistent top card
+- Color-coded battery and signal indicators
+- Material 3 dark theme for stealth appearance
+- Dialog popups for call forwarding configuration
+- Developer mode info in Settings (protocol, architecture)
+- Real-time status updates via configurable polling
 
 ---
 

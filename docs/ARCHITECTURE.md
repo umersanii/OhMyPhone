@@ -226,37 +226,58 @@ match cmd {
 ### 3.2 Flutter Project Structure
 
 ```
-lib/
+flutter_app/lib/
  ├─ api/
- │   ├─ client.dart
- │   └─ models.dart
+ │   ├─ client.dart        # HTTP client with HMAC authentication
+ │   └─ models.dart        # DeviceStatus, ApiResponse models
+ ├─ config/
+ │   └─ app_config.dart    # SharedPreferences wrapper
+ ├─ security/
+ │   └─ hmac.dart          # HMAC-SHA256 signing utility
  ├─ state/
- │   ├─ relay_state.dart
- │   └─ sync.dart
+ │   └─ relay_state.dart   # Provider-based state management with polling
  ├─ ui/
- │   ├─ dashboard.dart
- │   └─ controls.dart
- └─ security/
-     └─ hmac.dart
+ │   ├─ dashboard.dart     # Main screen with card-based controls
+ │   └─ settings.dart      # Configuration and connection testing
+ └─ main.dart              # App entry with Material 3 dark theme
 ```
+
+**Implemented features**:
+- Provider state management with auto-polling (5-60s configurable)
+- Material 3 design with dark theme and card-based layout
+- Persistent configuration via SharedPreferences
+- Real-time connection status monitoring
+- HMAC-SHA256 authentication with replay protection
+- Pull-to-refresh manual status updates
+- Dialog-based call forwarding configuration
 
 ---
 
 ### 3.3 UX Behavior
 
-* Shows:
+**Dashboard displays**:
+- **Connection Status Card**: Persistent indicator at top showing online/offline/error state with last update timestamp
+- **Battery Level**: Color-coded percentage (green/orange/red)
+- **Signal Strength**: Color-coded percentage indicator
+- **Mobile Data Toggle**: Card with switch control
+- **Airplane Mode Toggle**: Card with switch control
+- **Call Forwarding**: Card with toggle and number configuration dialog
 
-  * Online / offline
-  * Battery %
-  * Signal strength
-* Controls:
+**All controls have equal visual priority** using card-based layout.
 
-  * Mobile data
-  * Airplane mode
-  * Call forwarding
-  * Dial via relay phone
+**User interactions**:
+- Tap card to toggle feature
+- Pull down to manually refresh status
+- Settings icon (⚙️) opens configuration page
+- Call forwarding shows dialog for number input when enabling
 
-Everything is explicit and manual.
+**State management**:
+- Auto-polling every 5-60 seconds (user configurable)
+- Connection errors displayed in status card
+- Snackbar notifications for action results
+- Graceful offline mode (no crashes)
+
+Everything is explicit and manual - no background services or push notifications.
 
 ---
 
