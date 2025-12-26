@@ -46,9 +46,40 @@ echo ""
 echo "[3/7] Updating system packages..."
 apt update && apt upgrade -y
 
-# Install Asterisk
-echo "[4/7] Installing Asterisk..."
-apt install -y asterisk
+# Install dependencies for Asterisk
+echo "[4/7] Installing Asterisk dependencies..."
+apt install -y build-essential wget libssl-dev libncurses5-dev libnewt-dev \
+    libxml2-dev linux-headers-$(uname -r) libsqlite3-dev uuid-dev \
+    libjansson-dev
+
+# Download and compile Asterisk
+echo "[5/7] Downloading Asterisk 20 LTS..."
+cd /usr/src
+ASTERISK_VERSION="20.11.1"
+wget https://downloads.asterisk.org/pub/telephony/asterisk/asterisk-${ASTERISK_VERSION}.tar.gz
+tar xvf asterisk-${ASTERISK_VERSION}.tar.gz
+cd asterisk-${ASTERISK_VERSION}
+
+echo "[6/7] Compiling Asterisk (this may take 15-30 minutes)..."
+./configure --with-jansson-bundled
+make menuselect.makeopts
+# Disable unnecessary modules to speed up compilation
+menuselect/menuselect --disable BUILD_NATIVE \
+    --disable chan_dahdi --disable chan_mobile \
+    --disable app_voicemail --disable app_directory \
+    menuselect.makeopts
+make -j$(nproc)
+make install
+make samples
+make config
+
+# Create asterisk user
+useradd -r -d /var/lib/asterisk -s /bin/false asterisk || true
+chown -R asterisk:asterisk /etc/asterisk /var/lib/asterisk /var/log/asterisk /var/spool/asterisk /usr/lib/asterisk
+
+# Set Asterisk to run as asterisk user
+sed -i 's/#AST_USER="asterisk"/AST_USER="asterisk"/' /etc/default/asterisk
+sed -i 's/#AST_GROUP="asterisk"/AST_GROUP="asterisk"/' /etc/default/asterisk
 
 # Stop Asterisk for configuration
 systemctl stop asterisk

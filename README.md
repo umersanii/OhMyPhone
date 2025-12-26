@@ -327,6 +327,9 @@ See [Project Status](#project-status) for current progress.
 **Phase 4**: Optional features (SIP bridge, advanced call control)
 
 ---
+## Secret but who cares
+Dumb phone password: 7ovzi65WSFtAmvmzHERtp7cj
+Main phone password: QMedIllM5Is6McYRCkSIgnfJ
 
 ## Support
 
