@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 import '../security/hmac.dart';
 import 'models.dart';
@@ -34,7 +35,24 @@ class DaemonClient {
   Future<ApiResponse<void>> setDataEnabled(bool enabled) async {
     try {
       final body = jsonEncode({'enable': enabled});
-      final headers = auth.generateHeaders(body: body);
+      final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      final message = body + timestamp;
+      final key = utf8.encode(auth.secret);
+      final bytes = utf8.encode(message);
+      final hmacSha256 = Hmac(sha256, key);
+      final digest = hmacSha256.convert(bytes).toString();
+
+      // Print the exact values used in the request
+      print('DEBUG: POST /radio/data');
+      print('Body: $body');
+      print('Timestamp: $timestamp');
+      print('HMAC: $digest');
+
+      final headers = {
+        'Content-Type': 'application/json',
+        'X-Auth': digest,
+        'X-Time': timestamp,
+      };
 
       final response = await http
           .post(

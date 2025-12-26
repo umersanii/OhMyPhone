@@ -2,6 +2,8 @@
 # Root + Shell + REST Wrapper Architecture
 **(Option 3 — No Tasker, Full Control)**
 
+> **Note**: This document describes the original carrier-based call forwarding architecture. The project has migrated to **VoIP bridge** for call handling. See [`docs/VOIP_BRIDGE.md`](VOIP_BRIDGE.md) for the current implementation using Raspberry Pi + Asterisk.
+
 This document defines the complete system architecture, components, APIs, and operational flow for a **relay (dumb) phone + main phone** setup using a **rooted Android device** controlled via a **secure REST interface**, with **Flutter** as the control UI.
 
 ---
@@ -136,9 +138,12 @@ am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false
 
 ---
 
-#### `/call/forward`
+#### ~~`/call/forward`~~ (DEPRECATED)
 
-**POST**
+> **Deprecated**: Carrier-based call forwarding has been replaced by VoIP bridge.  
+> See [`docs/VOIP_BRIDGE.md`](VOIP_BRIDGE.md) for the new implementation.
+
+**POST** (Legacy documentation)
 
 ```json
 {

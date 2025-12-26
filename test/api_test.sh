@@ -5,9 +5,9 @@
 set -e
 
 # Configuration
-HOST="${DAEMON_HOST:-127.0.0.1}"
+HOST="${DAEMON_HOST:-100.99.172.92}"
 PORT="${DAEMON_PORT:-8080}"
-SECRET="${DAEMON_SECRET:-your-secret-key-here-generate-new-one}"
+SECRET="${DAEMON_SECRET:-fe0b169e98708033563a3d20808687ceffedec4d7b0392ee08eb104c5f689188}"
 BASE_URL="http://${HOST}:${PORT}"
 
 # Colors for output

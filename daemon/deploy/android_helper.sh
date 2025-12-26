@@ -158,7 +158,7 @@ case $OPTION in
         echo "Starting daemon in foreground..."
         echo -e "${YELLOW}Press Ctrl+C to stop${NC}"
         echo ""
-        adb shell su -c "cd /data/local/tmp && ./ohmyphone-daemon"
+        adb shell su -c "cd /data/local/tmp && exec /data/local/tmp/ohmyphone-daemon"
         ;;
     2)
         echo ""

@@ -40,5 +40,5 @@ tmp/
 temp/
 *.tmp
 
-# Github
-.github
+# # Github
+# .github

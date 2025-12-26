@@ -20,25 +20,29 @@
 ### Architecture
 
 ```
-┌─────────────────────┐           ┌─────────────────────┐
-│   Main Phone        │  Tailscale│   Dumb Phone        │
-│   (Not rooted)      │◄─────────►│   (Rooted)          │
-│                     │  HMAC Auth│                     │
-│  ┌───────────────┐  │           │  ┌───────────────┐  │
-│  │ Flutter App   │  │           │  │ Rust Daemon   │  │
-│  │ - Dashboard   │──┼───────────┼─►│ - REST API    │  │
-│  │ - Controls    │  │           │  │ - Auth Layer  │  │
-│  │ - HMAC Client │  │           │  │ - Shell Exec  │  │
-│  └───────────────┘  │           │  └───────────────┘  │
-│                     │           │                     │
-│  No SIM             │           │  SIM + GSM          │
-└─────────────────────┘           └─────────────────────┘
+┌─────────────────────┐    Tailscale    ┌─────────────────────┐    Tailscale    ┌─────────────────────┐
+│   Dumb Phone        │◄───────────────►│   Raspberry Pi      │◄───────────────►│   Main Phone        │
+│   (Rooted, SIM)     │                 │   (SIP Server)      │                 │   (No SIM)          │
+│                     │                 │                     │                 │                     │
+│  ┌───────────────┐  │                 │  ┌───────────────┐  │                 │  ┌───────────────┐  │
+│  │ Rust Daemon   │  │                 │  │ Asterisk/     │  │                 │  │ Flutter App   │  │
+│  │ - REST API    │──┼─HMAC Auth──────►│  │ FreePBX       │  │                 │  │ - Dashboard   │  │
+│  │ - Auth Layer  │  │                 │  │               │  │                 │  │ - Controls    │  │
+│  │ - Shell Exec  │  │                 │  │ SIP Routing   │  │                 │  │ - HMAC Client │  │
+│  │ - SIP Client  │──┼─SIP (ext 100)──►│  │ - Ext 100     │◄─┼─SIP (ext 101)──│  │ - SIP Client  │  │
+│  │ - Call Bridge │  │                 │  │ - Ext 101     │  │                 │  │ - Call UI     │  │
+│  └───────────────┘  │                 │  └───────────────┘  │                 │  └───────────────┘  │
+│                     │                 │                     │                 │                     │
+│  SIM + GSM          │                 │  Routes VoIP calls  │                 │  No SIM needed      │
+│  Auto-answer calls  │                 │  between endpoints  │                 │  Receives VoIP calls│
+└─────────────────────┘                 └─────────────────────┘                 └─────────────────────┘
 ```
 
 **Key features:**
 - 🔒 HMAC-SHA256 authentication with replay protection
 - 🌐 Tailscale VPN for secure communication
-- 📱 Control mobile data, airplane mode, call forwarding
+- 📱 Control mobile data, airplane mode, VoIP call bridging
+- 📞 Auto-answer GSM calls and bridge to main phone via SIP
 - 🔋 Optimized for multi-day battery life on dumb phone
 - 🚫 No arbitrary shell execution (whitelist-only commands)
 
@@ -54,9 +58,9 @@
 - [x] GET `/status` endpoint (battery, signal, data/airplane/forwarding states)
 - [x] POST `/radio/data` - Toggle mobile data
 - [x] POST `/radio/airplane` - Toggle airplane mode
-- [x] POST `/call/forward` - Call forwarding control with phone number validation
 - [x] POST `/call/dial` - Initiate phone calls
-- [x] Shell executor with command whitelist (MMI codes via `service call phone`)
+- [ ] VoIP bridge implementation (auto-answer GSM, SIP client, audio routing)
+- [x] Shell executor with command whitelist
 - [x] Configuration management
 - [x] Module structure (`api/` and `executor/`)
 - [x] Unit tests for authentication and phone number validation
@@ -74,16 +78,17 @@
 - [x] Daemon verified running with HMAC authentication
 
 ### 🚧 In Progress
-- [ ] Tailscale setup for remote access (without ADB)
+- [ ] VoIP bridge implementation (Raspberry Pi SIP server + daemon integration)
 
 ### 📋 Todo
+- [ ] Set up Raspberry Pi with Asterisk/FreePBX
+- [ ] Implement PJSIP client in daemon (call detection, auto-answer, audio bridge)
+- [ ] Add SIP client to Flutter app (receive VoIP calls)
+- [ ] Build call UI in Flutter (incoming call screen, active call controls)
 - [ ] Configure daemon to bind to Tailscale IP (currently localhost only)
-- [ ] Test all endpoints on actual Android hardware
-- [ ] Build and test Flutter APK on main phone
-- [ ] End-to-end testing over Tailscale
+- [ ] End-to-end VoIP testing (GSM → SIP → main phone)
 - [ ] Rate limiting and audit logs
 - [ ] Magisk service auto-start on boot
-- [ ] Optional: SIP/VoIP bridge
 
 ---
 
@@ -92,6 +97,7 @@
 ### Prerequisites
 - Rooted Android device (dumb phone) - LineageOS recommended
 - Standard Android/iOS device (main phone)
+- Raspberry Pi (for Asterisk/FreePBX SIP server)
 - Tailscale account
 
 ### Installation
@@ -189,17 +195,13 @@ Response: {
 }
 ```
 
-#### POST `/call/forward`
-Configure call forwarding
+#### ~~POST `/call/forward`~~ (DEPRECATED)
+**Replaced by VoIP bridge** - Use SIP client for call bridging instead
 ```json
-Request: { "enable": true, "number": "+1234567890" }
-Response: {
-  "success": true,
-  "enabled": true,
-  "message": "Call forwarding enabled"
-}
+// This endpoint is deprecated and will be removed
+// Use VoIP bridge for call forwarding functionality
 ```
-*Supports phone numbers with 7-15 digits, optional + prefix*
+*See `docs/VOIP_BRIDGE.md` for VoIP implementation*
 
 #### POST `/call/dial`
 Initiate outgoing call
@@ -329,3 +331,6 @@ See [Project Status](#project-status) for current progress.
 ## Support
 
 For issues, questions, or feature requests, please [open an issue](https://github.com/yourusername/ohmyphone/issues).
+
+## Memento Mori
+`export PATH="$HOME/.cargo/bin:$HOME/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH" && cd /mnt/work/Coding/OhMyPhone/daemon && cargo build --release --target aarch64-linux-android`
