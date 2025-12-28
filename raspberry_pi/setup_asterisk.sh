@@ -53,12 +53,11 @@ apt install -y build-essential wget libssl-dev libncurses5-dev libnewt-dev \
     libjansson-dev
 
 # Download and compile Asterisk
-echo "[5/7] Downloading Asterisk 20 LTS..."
+echo "[5/7] Downloading Asterisk 20 LTS (latest stable)..."
 cd /usr/src
-ASTERISK_VERSION="20.11.1"
-wget https://downloads.asterisk.org/pub/telephony/asterisk/asterisk-${ASTERISK_VERSION}.tar.gz
-tar xvf asterisk-${ASTERISK_VERSION}.tar.gz
-cd asterisk-${ASTERISK_VERSION}
+wget https://downloads.asterisk.org/pub/telephony/asterisk/asterisk-20-current.tar.gz
+tar xvf asterisk-20-current.tar.gz
+cd asterisk-20.*
 
 echo "[6/7] Compiling Asterisk (this may take 15-30 minutes)..."
 ./configure --with-jansson-bundled
